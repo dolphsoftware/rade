@@ -6,4 +6,5 @@
     <string name="label_dont_have_account">Nemate nalog?</string>
     <string name="label_sign_up"><u>Registruj se</u></string>
     <string name="button_title_register">Registruj se</string>
+    <string name="button_title_logout">Odjavi se</string>
 </resources>

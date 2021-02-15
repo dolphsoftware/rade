@@ -7,13 +7,13 @@ import com.sandbox.rader.repository.UserRepository;
 
 public class RegistrationViewModel extends ViewModel {
 
-    private UserRepository userRepository;
+    public UserRepository userRepository = UserRepository.getInstance();
 
     public ObservableField<String> userName = new ObservableField<>("");
     public ObservableField<String> password = new ObservableField<>("");
 
     public void registerUser() {
-        UserRepository.getInstance().registerUser(userName.get(), password.get());
+        userRepository.registerUser(userName.get(), password.get());
     }
 
 }

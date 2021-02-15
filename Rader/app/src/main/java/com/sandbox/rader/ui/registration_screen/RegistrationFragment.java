@@ -16,6 +16,7 @@ import com.sandbox.rader.R;
 import com.sandbox.rader.base.BaseFragment;
 import com.sandbox.rader.databinding.RegistrationFragmentBinding;
 import com.sandbox.rader.repository.UserRepository;
+import com.sandbox.rader.utils.Constants;
 
 public class RegistrationFragment extends BaseFragment<RegistrationFragmentBinding> {
 
@@ -30,5 +31,21 @@ public class RegistrationFragment extends BaseFragment<RegistrationFragmentBindi
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         mViewModel = new ViewModelProvider(this).get(RegistrationViewModel.class);
+        binding.setViewmodel(mViewModel);
+        observeLogin();
+    }
+
+    private void observeLogin() {
+        mViewModel.userRepository.userMutableLiveData.observe(getViewLifecycleOwner(), user -> {
+            if (user!=null){
+                handleChangeFragment(Constants.DASHBOARD_SCREEN);
+            }
+        });
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        mViewModel.userRepository.userMutableLiveData.removeObservers(getViewLifecycleOwner());
     }
 }

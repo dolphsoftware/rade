@@ -1,11 +1,12 @@
 package com.sandbox.rader.api;
 
-import com.sandbox.rader.model.GetRegionsResponse;
+import com.sandbox.rader.model.GetExchangeRateTable;
+import com.sandbox.rader.utils.Constants;
 
 import retrofit2.Call;
 import retrofit2.http.GET;
 
 public interface ApiService {
-    @GET("/nectar/WS_GetAllRegions")
-    Call<GetRegionsResponse> getAllRegions();
+    @GET(Constants.API_ID + "/kursna_lista")
+    Call<GetExchangeRateTable> fetchExchangeRates();
 }

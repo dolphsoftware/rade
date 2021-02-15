@@ -1,9 +1,13 @@
 package com.sandbox.rader.repository;
 
+import android.os.AsyncTask;
 import android.util.Log;
 
+import androidx.lifecycle.MutableLiveData;
+
+import com.sandbox.rader.api.livaData.CurrenciesLiveData;
 import com.sandbox.rader.app.App;
-import com.sandbox.rader.model.GetRegionsResponse;
+import com.sandbox.rader.model.GetExchangeRateTable;
 import com.sandbox.rader.model.User;
 
 import retrofit2.Call;
@@ -14,6 +18,8 @@ public class UserRepository {
 
     private static UserRepository instance;
 
+    public MutableLiveData<User> userMutableLiveData = new MutableLiveData<>();
+
     public static UserRepository getInstance() {
         if (instance == null) {
             instance = new UserRepository();
@@ -21,27 +27,60 @@ public class UserRepository {
         return instance;
     }
 
-    public void getRegionInfo() {
-        Call<GetRegionsResponse> call = App.getInstance().getConnection().getApiService().getAllRegions();
-        call.enqueue(new Callback<GetRegionsResponse>() {
+    public void fetchExchangeRates(CurrenciesLiveData currenciesLiveData) {
+        Call<GetExchangeRateTable> call = App.getInstance().getConnection().getApiService().fetchExchangeRates();
+        call.enqueue(new Callback<GetExchangeRateTable>() {
             @Override
-            public void onResponse(Call<GetRegionsResponse> call, Response<GetRegionsResponse> response) {
-                Log.e("Response: ", response.body().getListOfRegions().toArray().toString());
+            public void onResponse(Call<GetExchangeRateTable> call, Response<GetExchangeRateTable> response) {
+               currenciesLiveData.createFrom(response.body());
             }
 
             @Override
-            public void onFailure(Call<GetRegionsResponse> call, Throwable t) {
+            public void onFailure(Call<GetExchangeRateTable> call, Throwable t) {
                 Log.e("Error", t.getMessage());
             }
         });
     }
 
     public void registerUser(String userName, String password) {
-        App.getInstance().getDatabase().userDao().insertAll(new User(userName, password));
 
+        new AsyncTask<User, Void, User>() {
+
+            @Override
+            protected User doInBackground(User... users) {
+                App.getInstance().getDatabase().userDao().insertAll(new User(userName, password));
+                return App.getInstance().getDatabase().userDao().getLoggedInUser(userName, password);
+            }
+
+            @Override
+            protected void onPostExecute(User user) {
+                super.onPostExecute(user);
+                App.getUserManager().startSession(user);
+                userMutableLiveData.postValue(user);
+            }
+        }.execute();
     }
 
     public void login(String userName, String password) {
-        App.getInstance().getDatabase().userDao().getLoggedInUser(userName, password);
+
+        new AsyncTask<Void, Void, User>() {
+            @Override
+            protected User doInBackground(Void... voids) {
+                return App.getInstance().getDatabase().userDao().getLoggedInUser(userName, password);
+            }
+
+            @Override
+            protected void onPostExecute(User user) {
+                super.onPostExecute(user);
+                App.getUserManager().startSession(user);
+                userMutableLiveData.postValue(user);
+            }
+        }.execute();
+
+    }
+
+    public void logout() {
+        App.getUserManager().endSession();
+        userMutableLiveData.postValue(null);
     }
 }

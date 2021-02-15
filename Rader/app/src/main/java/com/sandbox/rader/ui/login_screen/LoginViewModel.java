@@ -9,11 +9,13 @@ import com.sandbox.rader.repository.UserRepository;
 
 public class LoginViewModel extends ViewModel {
 
+    public UserRepository userRepository = UserRepository.getInstance();
+
     public ObservableField<String> userName = new ObservableField<>("");
     public ObservableField<String> password = new ObservableField<>("");
 
     public void login() {
         Log.d("Tag" , "radi bre");
-        UserRepository.getInstance().login(userName.get(), password.get());
+        userRepository.login(userName.get(), password.get());
     }
 }

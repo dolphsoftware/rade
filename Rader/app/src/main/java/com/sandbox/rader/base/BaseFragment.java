@@ -13,6 +13,7 @@ import androidx.databinding.DataBindingUtil;
 import androidx.databinding.ViewDataBinding;
 import androidx.fragment.app.Fragment;
 
+import com.sandbox.rader.databinding.LoginScreenFragmentBinding;
 import com.sandbox.rader.ui.HomeHostCallback;
 import com.sandbox.rader.ui.MainActivity;
 

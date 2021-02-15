@@ -8,7 +8,7 @@ import androidx.fragment.app.FragmentTransaction;
 
 import com.sandbox.rader.R;
 import com.sandbox.rader.app.App;
-import com.sandbox.rader.ui.dashboard_screen.DashBoardScreen;
+import com.sandbox.rader.ui.dashboard_screen.DashBoardScreenFragment;
 import com.sandbox.rader.ui.login_screen.LoginFragment;
 import com.sandbox.rader.ui.registration_screen.RegistrationFragment;
 import com.sandbox.rader.utils.Constants;
@@ -38,7 +38,7 @@ public class MainActivity extends AppCompatActivity implements HomeHostCallback 
                 break;
             case Constants.DASHBOARD_SCREEN:
             default:
-                fragment = new DashBoardScreen();
+                fragment = new DashBoardScreenFragment();
                 break;
         }
 
